@@ -7,17 +7,36 @@
 "use strict"
 
 /**
- * Check servie worker.
+ * Check service worker.
  */
 if (navigator.serviceWorker) {
-  navigator.serviceWorker.register("/ICS2O-PWA-Template/sw.js", {
-    scope: "/ICS2O-PWA-Template/",
+  navigator.serviceWorker.register("/ICS2O-Unit-6-03/sw.js", {
+    scope: "/ICS2O-Unit-6-03/",
   })
 }
 
-/**
- * This function displays an alert.
- */
-function myButtonClicked() {
-  document.getElementById("hello-world").innerHTML = "<p>Hello, World!</p>"
+const getWeather = async (URLAddress) => {
+  try {
+    const result = await fetch(URLAddress)
+    const jsonData = await result.json()
+    console.log(jsonData)
+
+    const img = jsonData.weather[0].icon
+    document.getElementById("api-image").innerHTML =
+      '<img src="http://openweathermap.org/img/wn/' +
+      img +
+      '@2x.png" alt="weather image">'
+
+    const tempInC = jsonData.main.temp - 273.15
+    document.getElementById("tempurature").innerHTML =
+      "<p> Tempurature: " + tempInC.toFixed(1) + " °C</p>"
+
+    document.getElementById("weather").innerHTML =
+      "<p> Weather: " + jsonData.weather[0].main + "</p>"
+  } catch (err) {
+    console.log(err)
+  }
 }
+getWeather(
+  "https://api.openweathermap.org/data/2.5/weather?lat=45.4211435&lon=-75.6900574&appid=fe1d80e1e103cff8c6afd190cad23fa5"
+)
